@@ -6,7 +6,8 @@ path_src=$1
 NAS_PROG=$2
 
 # define docker version
-VERSION="20.10.12"
+VERSION="26.1.2"
+DC_VERSION="2.27.0"
 
 log=/tmp/debug_apkg
 
@@ -27,15 +28,10 @@ cd "${APKG_PATH}"
 TARBALL="docker-${VERSION}.tgz"
 
 if [ ${ARCH} != "x86_64" ]; then
+    # As of docker 26.1.2 this appears to work with the docker provided binaries (at least on EX4100) so no need to compile it anymore
     ARCH="armhf"
-    # JediNite provides custom docker packages for ARM as versions above "19.03.8" do not have a working "dockerd" binary on WD EX4100
-    # Instead they are required to be built using Debian "stretch" instead of "buster" to workaround the issue.
-    # Thanks to gabrielitos87 for discovering the workaround for this issue.
-    # Refer to https://github.com/WDCommunity/wdpksrc/issues/85 for more details.
-    URL="https://github.com/JediNite/docker-ce-WDEX4100-binaries/releases/download/v${VERSION}/${TARBALL}"
-else
-    URL="https://download.docker.com/linux/static/stable/${ARCH}/${TARBALL}"
 fi
+URL="https://download.docker.com/linux/static/stable/${ARCH}/${TARBALL}"
 
 # download and extract the package
 curl -L "${URL}" | tar xz >> $log 2>&1
@@ -94,7 +90,8 @@ fi
 
 # install docker-compose
 dc="${APKG_PATH}/docker/docker-compose"
-curl -L https://github.com/docker/compose/releases/download/1.28.5/run.sh -o $dc
+#curl -L https://github.com/docker/compose/releases/download/1.28.5/run.sh -o $dc
+curl -L "https://github.com/docker/compose/releases/download/v${DC_VERSION}/docker-compose-linux-${ARCH}" -o $dc
 chmod +x $dc
 
 # proof that everything works
