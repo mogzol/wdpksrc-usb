@@ -29,9 +29,13 @@ TARBALL="docker-${VERSION}.tgz"
 
 if [ ${ARCH} != "x86_64" ]; then
     # As of docker 26.1.2 this appears to work with the docker provided binaries (at least on EX4100) so no need to compile it anymore
-    ARCH="armhf"
+    DOCKER_ARCH="armhf"
+    DC_ARCH="armv7"
+else
+    DOCKER_ARCH="${ARCH}"
+    DC_ARCH="${ARCH}"
 fi
-URL="https://download.docker.com/linux/static/stable/${ARCH}/${TARBALL}"
+URL="https://download.docker.com/linux/static/stable/${DOCKER_ARCH}/${TARBALL}"
 
 # download and extract the package
 curl -L "${URL}" | tar xz >> $log 2>&1
@@ -90,8 +94,7 @@ fi
 
 # install docker-compose
 dc="${APKG_PATH}/docker/docker-compose"
-#curl -L https://github.com/docker/compose/releases/download/1.28.5/run.sh -o $dc
-curl -L "https://github.com/docker/compose/releases/download/v${DC_VERSION}/docker-compose-linux-${ARCH}" -o $dc
+curl -L "https://github.com/docker/compose/releases/download/v${DC_VERSION}/docker-compose-linux-${DC_ARCH}" -o $dc
 chmod +x $dc
 
 # proof that everything works
