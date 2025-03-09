@@ -1,11 +1,17 @@
-# ANNOUNCEMENT AUG 2020
+# USB app fork of wdpksrc
 
-I (Stefaan / TFL) am refactoring this repo for compatibility with OS5. Please use issues tab if something is broken.
+This is a fork of wdpksrc which configures the apps to use an attached USB drive for their persistent storage, instead of the hard drive(s). I have my hard drives set to sleep during inactivity, and I don't want to have to wake the hard drive to use these apps. So instead, the app data directories have been set to `/mnt/USB/USB1_a1/$APP`.
 
-Several OS5 packages are now available on [CloudSmith](https://cloudsmith.io/~wd-community/repos/). The wdcommunity website is still to be updated.
+You can change the data directory by editing the `common.sh` file in any of the app directories.
 
-[![Hosted By: Cloudsmith](https://img.shields.io/badge/OSS%20hosting%20by-cloudsmith-blue?logo=cloudsmith&style=for-the-badge)](https://cloudsmith.com)
+Currently, this repository only includes two apps, `entware` and `docker` (plus an `example` app which does nothing). Docker has been updated to 26.1.4 (27 wasn't working for me, so I just went with the latest 26 version). The apps are only built for OS5.
 
+Functionality of the apps should be the same as the originals, but the scripts have all been updated to fix ShellCheck errors and some other minor issues, and improve logging. All script output (STDOUT and STDERR) is now logged to the log files, and each app outputs to its own log file (/tmp/apkg_$APP.log).
+
+The build script has also been updated. Currently it is only configured to output for the EX4100, but you can change this by editing the `MODELS` variable in build.sh.
+
+
+# Original README:
 
 # wdpksrc
 
@@ -31,11 +37,11 @@ The build environment is also available in a docker image.
 
 .. code::
 
-    docker build -t wdpk .    
-    docker run -it -v $(pwd):/wdpksrc wdpk /bin/bash    
-    cd wdpk/<somepackage>    
+    docker build -t wdpk .
+    docker run -it -v $(pwd):/wdpksrc wdpk /bin/bash
+    cd wdpk/<somepackage>
     ./build.sh
-    
+
 ### Build and deploy test
 
 .. code::
@@ -46,7 +52,7 @@ This builds the package, installs it on a PR4100 host device and runs a sanity c
 
 ### Native apps
 
-If you want to compile native apps, you'll need a complete wdpksrc / spksrc toolchain.  
+If you want to compile native apps, you'll need a complete wdpksrc / spksrc toolchain.
 
 Currently, these custom WD targets are available in this `SynoCommunity fork`_
 
@@ -55,7 +61,7 @@ Currently, these custom WD targets are available in this `SynoCommunity fork`_
 * wddl - WD DL2100 / DL4100 with 3.10.28 kernel
 * wdarm - all other devices (firmware version 2.x only!)
 
-**UPDATE**: it now creates WD binary packages right away. 
+**UPDATE**: it now creates WD binary packages right away.
 
 * add xor_checksum to your PATH (copy it to /usr/local/bin)
 * ``cd wdpk/someapp``

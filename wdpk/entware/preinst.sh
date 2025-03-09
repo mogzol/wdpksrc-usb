@@ -1,11 +1,8 @@
-#!/bin/sh
-
-[[ -f /tmp/debug_apkg ]] && echo "APKG_DEBUG: $0 $@" >> /tmp/debug_apkg
-
-APKG_PATH=$1
+#!/bin/bash
+source "$1/common.sh"
 
 # invalidate old entware installation leftovers
 # restore them if necessary
-ENTWARE_ROOT=/shares/Volume_1/entware
-BACKUP=${ENTWARE_ROOT}.bak
-[[ -d ${ENTWARE_ROOT} ]] && mv ${ENTWARE_ROOT} ${BACKUP}
+ENTWARE_ROOT=$DATA_ROOT/$APP_NAME
+BACKUP=$ENTWARE_ROOT.bak
+[[ -d "$ENTWARE_ROOT" ]] && mv "$ENTWARE_ROOT" "$BACKUP"

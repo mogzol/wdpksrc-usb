@@ -1,0 +1,19 @@
+Package:        example
+Version:        1.0.0
+Packager:       Mogzol
+Email:
+Homepage:       https://github.com/mogzol
+Description:    Example App
+Icon:           icon.png
+AddonShowName:  Example
+AddonIndexPage: index.html
+AddonUsedPort:
+InstDepend:
+InstConflict:
+StartDepend:
+StartConflict:
+CenterType:     1
+UserControl:    0
+MinFWVer:
+MaxFWVer:
+IndividualFlag: 0

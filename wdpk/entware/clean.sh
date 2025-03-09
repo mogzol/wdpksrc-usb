@@ -1,8 +1,5 @@
-#!/bin/sh
-
-LOG=/tmp/debug_apkg
-
-echo "APKG_DEBUG: $0 $@" >> $LOG
+#!/bin/bash
+source "$1/common.sh"
 
 # ensure services are stopped
 /opt/etc/init.d/rc.unslung stop
@@ -15,12 +12,10 @@ mkdir /home/root
 chown root:root /home/root
 
 # umount, the original /opt mount becomes visible again
-umount /opt
-
-if [ ! $? eq 0 ] ; then
-   echo "Entware clean umount failed" >> $LOG
-   fuser -cv /opt | tee -a $LOG
-   echo "Kill them all" >> $LOG
+if ! umount /opt ; then
+   echo "Entware clean umount failed"
+   fuser -cv /opt
+   echo "Kill them all"
    fuser -ck /opt
    sleep 2
    umount /opt
@@ -31,5 +26,5 @@ fi
 # remove lib
 
 # remove web
-rm -rf /var/www/apps/entware
-rm /var/www/cgi-bin/entware.py
+rm -f /var/www/apps/entware
+rm -f /var/www/cgi-bin/entware.py

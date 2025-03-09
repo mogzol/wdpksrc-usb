@@ -1,17 +1,15 @@
-#!/bin/sh
-
-[ -f /tmp/debug_apkg ] && echo "APKG_DEBUG: $0 $@" >> /tmp/debug_apkg
-
-path=$1
+#!/bin/bash
+source "$1/common.sh"
 
 # remove /opt from shell path
 rm -f /etc/profile
 
-# comment this to prevent removing all your entware apps
-rm -rf /shares/Volume_1/entware
+# (un)comment these to control what's deleted on uninstallation
+# rm -rf "$HOME_ROOT"
+rm -rf "$OPT_ROOT"
+# rm -rf "$DATA_ROOT/entware"
 
-# remove init.d startup hook
+# Remove the app from Nas_Prog
+rm -rf "$APKG_PATH"
 
-# remove lib
-
-# remove web
+# APKG should run the clean script before this one, which handles all other cleanup
