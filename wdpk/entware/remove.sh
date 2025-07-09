@@ -1,5 +1,6 @@
 #!/bin/bash
-source "$1/common.sh"
+SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
+source "$SCRIPT_DIR/common.sh"
 
 # remove /opt from shell path
 rm -f /etc/profile

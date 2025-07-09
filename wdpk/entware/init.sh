@@ -1,5 +1,6 @@
 #!/bin/bash
-source "$1/common.sh"
+SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
+source "$SCRIPT_DIR/common.sh"
 
 echo "Entware init.sh linking files from path: $APKG_PATH"
 
@@ -17,14 +18,19 @@ PROFILE=/etc/profile
 
 # restore home dir
 HOME=/home/root
-if [ ! -L "$HOME" ]
-then
+if [ ! -L "$HOME" ]; then
 	echo "Setup persistent home directory"
 	rm -rf "$HOME"
 	mkdir -p "$HOME_ROOT"
 	ln -sf "$HOME_ROOT" "$HOME"
 	chown -R root:root "$HOME"
 	chown -R root:root "$HOME_ROOT"
+
+  if [ -d "$ENTWARE_ROOT.bak" ]; then
+    echo "Previous installation found, restoring home directory..."
+    cp -a "$ENTWARE_ROOT.bak/home/." "$HOME_ROOT"
+    echo "NOTE: Apps from the previous installation will not be restored! Re-install them manually."
+  fi
 fi
 
 WEB_PATH=/var/www

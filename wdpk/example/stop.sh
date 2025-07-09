@@ -1,2 +1,5 @@
 #!/bin/bash
-source "$1/common.sh"
+SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
+source "$SCRIPT_DIR/common.sh"
+
+echo stop

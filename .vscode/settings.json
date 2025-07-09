@@ -1,10 +1,33 @@
 {
   "cSpell.words": [
+    "addrtype",
     "apkg",
+    "armhf",
     "armv",
+    "btrfs",
+    "cgroupfs",
+    "conntrack",
+    "devicemapper",
+    "devpts",
+    "dmsetup",
     "ENTWARE",
     "fuser",
+    "insmod",
+    "iptable",
     "Iseconds",
-    "opkg"
+    "issetup",
+    "masq",
+    "mnts",
+    "mountpoint",
+    "netfilter",
+    "opkg",
+    "preinst",
+    "RAMDISK",
+    "shellcheck",
+    "tcpudp",
+    "ULOG",
+    "usrbin",
+    "usrlib",
+    "xtables"
   ]
 }

@@ -1,10 +1,6 @@
-#!/bin/sh
-
-[ -f /tmp/debug_apkg ] && echo "APKG_DEBUG: $0 $@" >> /tmp/debug_apkg
-
-path=$1
-
-#rm -rf $path
+#!/bin/bash
+SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
+source "$SCRIPT_DIR/common.sh"
 
 # restore orig docker
 mv -f /usr/sbin/docker.bak /usr/sbin/docker
@@ -15,5 +11,9 @@ rm -rf /sbin/docker*
 # remove mountpoint
 rm -rf /var/lib/docker
 
-# remove web
-rm -rf /var/www/docker
+# remove docker data
+umount "$DOCKER_ROOT"
+rm -rf "$DOCKER_ROOT"
+
+# remove the app from Nas_Prog
+rm -rf "$APKG_PATH"

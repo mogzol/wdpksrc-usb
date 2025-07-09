@@ -1,19 +1,19 @@
-Package:	docker
-Version:	26.1.2
-Packager:	TFL
+Package:        docker
+Version:        26.1.4
+Packager:       TFL
 Email:
-Homepage:	https://docker.com
-Description:	Docker container management
-Icon:	        docker.png
-AddonShowName:	Docker
-AddonIndexPage:	index.html
-AddonUsedPort:	
-InstDepend:      
+Homepage:       https://docker.com
+Description:    Docker container management
+Icon:           docker.png
+AddonShowName:  Docker (USB)
+AddonIndexPage: index.html
+AddonUsedPort:
+InstDepend:
 InstConflict:
 StartDepend:
 StartConflict:
 CenterType:
 UserControl:
-MinFWVer:	5.0.0
+MinFWVer:       5.0.0
 MaxFWVer:
 IndividualFlag: 0

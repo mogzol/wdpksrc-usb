@@ -2,11 +2,9 @@
 # Common code that is sourced by every script
 # shellcheck disable=SC2034
 
-APP_NAME=entware
+APP_NAME=docker
 DATA_ROOT=/mnt/USB/USB1_a1
-ENTWARE_ROOT=$DATA_ROOT/$APP_NAME
-HOME_ROOT=$ENTWARE_ROOT/home
-OPT_ROOT=$ENTWARE_ROOT/opt
+DOCKER_ROOT=$DATA_ROOT/$APP_NAME
 LOG=/tmp/apkg_$APP_NAME.log
 APKG_PATH=$1
 

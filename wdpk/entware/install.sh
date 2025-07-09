@@ -1,9 +1,8 @@
 #!/bin/bash
-source "$1/common.sh"
+SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
+source "$SCRIPT_DIR/common.sh"
 
 NAS_PROG=$2
-
-DEST_PATH="${NAS_PROG}/${APP_NAME}"
 
 # copy the WD entware package to App
 cp -rf "$APKG_PATH" "$NAS_PROG"

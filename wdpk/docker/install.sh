@@ -1,104 +1,67 @@
-#!/bin/sh
-
-[ -f /tmp/debug_apkg ] && echo "APKG_DEBUG: $0 $@" >> /tmp/debug_apkg
-
-path_src=$1
-NAS_PROG=$2
+#!/bin/bash
+SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
+source "$SCRIPT_DIR/common.sh"
 
 # define docker version
-VERSION="26.1.2"
-DC_VERSION="2.27.0"
+VERSION="26.1.4"
+COMPOSE_VERSION="2.38.2"
 
-log=/tmp/debug_apkg
+NAS_PROG=$2
+APP_PATH="$NAS_PROG/$APP_NAME"
 
-APKG_MODULE="docker"
-APKG_PATH="${NAS_PROG}/${APKG_MODULE}"
-APPDIR="$APKG_PATH"
-
-echo "Installing with APPDIR: ${APPDIR} / ${APKG_PATH}"
+echo "Installing from $APKG_PATH to $APP_PATH"
 
 # install all package scripts to the proper location
-cp -rf $path_src $NAS_PROG
+cp -rf "$APKG_PATH" "$NAS_PROG"
 
 # get current architecture
 ARCH="$(uname -m)"
 
-# download docker binaries
-cd "${APKG_PATH}"
-TARBALL="docker-${VERSION}.tgz"
-
-if [ ${ARCH} != "x86_64" ]; then
-    # As of docker 26.1.2 this appears to work with the docker provided binaries (at least on EX4100) so no need to compile it anymore
-    DOCKER_ARCH="armhf"
-    DC_ARCH="armv7"
-else
-    DOCKER_ARCH="${ARCH}"
-    DC_ARCH="${ARCH}"
-fi
-URL="https://download.docker.com/linux/static/stable/${DOCKER_ARCH}/${TARBALL}"
-
-# download and extract the package
-curl -L "${URL}" | tar xz >> $log 2>&1
-
-if [ ! $? -eq 0 ]; then
-	echo "Failed to download/extract docker package" | tee $log
-	exit 1
-fi
-
-# stop original docker v1.7
-if [ -e "${ORIG_DAEMONSH}" ]; then
-    echo "Found orig daemon"
-    /usr/sbin/docker_daemon.sh shutdown
-    sleep 1
-    mv /usr/sbin/docker_daemon.sh /usr/sbin/docker_daemon.sh.bak
-else
-    echo "No orig daemon found"
-fi
-
-# setup docker binaries in PATH so they are found before the 1.7 binaries
-ln -s $(readlink -f ${APKG_PATH})/docker/* /sbin
-
-# setup persistent docker root directory
-DROOT=${NAS_PROG}/_docker
-
-if [ -d ${DROOT} ]; then
-  if [ -d ${DROOT}/devicemapper ]; then
+if [ -d $DOCKER_ROOT ]; then
+  if [ -d $DOCKER_ROOT/devicemapper ]; then
     echo "Found old docker devicemapper storage.. backup and create new docker root"
-    mv "${DROOT}" "${DROOT}.bak"
-    mkdir -p "${DROOT}"
+    mv "$DOCKER_ROOT" "$DOCKER_ROOT.bak"
+    mkdir -p "$DOCKER_ROOT"
   else
     echo "Found existing docker storage. Reusing."
   fi
 else
   echo "Creating new docker root"
-  mkdir -p "${DROOT}"
+  mkdir -p "$DOCKER_ROOT"
 fi
 
-# setup docker
-"${APKG_PATH}/daemon.sh" setup
+# download docker binaries
+cd "$DOCKER_ROOT" || exit 1
+TARBALL="docker-${VERSION}.tgz"
 
-sleep 1
+if [ "$ARCH" != "x86_64" ]; then
+    # As of docker 26.1.2 this appears to work with the docker provided binaries (at least on EX4100) so no need to compile it anymore
+    DOCKER_ARCH="armhf"
+    DC_ARCH="armv7"
+else
+    DOCKER_ARCH="$ARCH"
+    DC_ARCH="$ARCH"
+fi
+URL="https://download.docker.com/linux/static/stable/$DOCKER_ARCH/$TARBALL"
+
+# download and extract the package
+if ! curl -L "${URL}" | tar xz; then
+	echo "Failed to download/extract docker package"
+	exit 1
+fi
+
+# setup binaries in PATH before the original v1.7 binaries
+ln -sfn "$(readlink -f "$DOCKER_ROOT")"/docker/* /sbin
 
 # start daemon
-"${APKG_PATH}/daemon.sh" start
-
-sleep 3
-
-# install portainer to manage docker, only if there is no container Portainer (running or not)
-docker ps -a | grep portainer-ce
-if [ $? = 1 ]; then
-    docker run -d -p 9000:9000 --restart always \
-               --name portainer -v /var/run/docker.sock:/var/run/docker.sock \
-               -v $(readlink -f ${APKG_PATH})/portainer:/data portainer/portainer-ce
-fi
+"$APP_PATH/daemon.sh" start
 
 # install docker-compose
-dc="${APKG_PATH}/docker/docker-compose"
-curl -L "https://github.com/docker/compose/releases/download/v${DC_VERSION}/docker-compose-linux-${DC_ARCH}" -o $dc
-chmod +x $dc
+dc="$DOCKER_ROOT/docker/docker-compose"
+curl -L "https://github.com/docker/compose/releases/download/v${COMPOSE_VERSION}/docker-compose-linux-${DC_ARCH}" -o "$dc"
+chmod +x "$dc"
 
 # proof that everything works
-docker ps >> $log 2>&1
+docker ps
 
-echo "Addon Docker (install.sh) done" >> $log
-
+echo "Addon Docker (install.sh) done"

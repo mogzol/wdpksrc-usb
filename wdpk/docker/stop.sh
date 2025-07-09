@@ -1,17 +1,11 @@
-#!/bin/sh
-
-APPDIR=$1
-LOG=/tmp/debug_apkg
+#!/bin/bash
+SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
+source "$SCRIPT_DIR/common.sh"
 
 echo 'DOCKER stop: stop daemon'
-"$APPDIR/daemon.sh" shutdown >> $LOG 2>&1
+"$APKG_PATH/daemon.sh" shutdown
 
 sleep 1
 
 echo "Remaining mounts:"
-echo "$(cat /proc/self/mounts | grep docker)"
-
-#echo 'DOCKER stop: unmount the BTRFS volume'
-#umount /var/lib/docker
-
-#/sbin/losetup -d /dev/loop1
+grep docker /proc/self/mounts
