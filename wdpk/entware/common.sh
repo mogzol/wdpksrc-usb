@@ -27,8 +27,8 @@ if ! [ -t 0 ] && [ -z "$APKG_LOGGING_SETUP" ]; then
     set -xo pipefail
 fi
 
-# Ensure DATA_ROOT exists or fail
+# Ensure DATA_ROOT exists
 if [ ! -d "$DATA_ROOT" ]; then
     echo "APKG_ERROR: DATA_ROOT does not exist: $DATA_ROOT"
-    exit 1
+    echo "Continuing, but there will probably be issues..."
 fi

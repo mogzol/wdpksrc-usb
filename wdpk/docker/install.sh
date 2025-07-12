@@ -50,18 +50,10 @@ if ! curl -L "${URL}" | tar xz; then
 	exit 1
 fi
 
-# setup binaries in PATH before the original v1.7 binaries
-ln -sfn "$(readlink -f "$DOCKER_ROOT")"/docker/* /sbin
-
-# start daemon
-"$APP_PATH/daemon.sh" start
-
 # install docker-compose
 dc="$DOCKER_ROOT/docker/docker-compose"
 curl -L "https://github.com/docker/compose/releases/download/v${COMPOSE_VERSION}/docker-compose-linux-${DC_ARCH}" -o "$dc"
 chmod +x "$dc"
 
-# proof that everything works
-docker ps
 
 echo "Addon Docker (install.sh) done"
